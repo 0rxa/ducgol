@@ -28,20 +28,38 @@ int main(int argc, char** argv)
 		int h, w;
 		getmaxyx(stdscr, h, w);
 
-		if( ch == ' ' )
+		if(ch == FIELD)
 		{
-			char c = inch() == BLOCK ? ' ' : BLOCK;
+			char c = inch() == BLOCK ? FIELD : BLOCK;
 			mvaddch(y, x, c);
 			x++;
 		}
-		else if(ch == KEY_LEFT  || ch == 'h' && x-1 >= 0) x--;
-		else if(ch == KEY_RIGHT || ch == 'l' && x+1 <= w) x++;
-		else if(ch == KEY_DOWN  || ch == 'j' && y+1 <= h) y++;
-		else if(ch == KEY_UP    || ch == 'k' && y-1 >= 0) y--;
+		else if((ch == KEY_LEFT  || ch == 'h') && x-1 >= 0) x--;
+		else if((ch == KEY_RIGHT || ch == 'l') && x+1 <= w) x++;
+		else if((ch == KEY_DOWN  || ch == 'j') && y+1 <= h) y++;
+		else if((ch == KEY_UP    || ch == 'k') && y-1 >= 0) y--;
 
-		else if(ch == TAB) run = !run;
+		else if(ch == TAB)
+		{
+			if(run)
+			{
+				move(h-1, 0);
+				clrtoeol();
+				move(y, x);
+			}
+			run = !run;
+		}
 		else if(ch == ESC || ch == 'q') break;
-		else if(ch == ENTER || run) { start(stdscr); usleep(250000); }
+		else if(ch == ENTER || run)
+		{
+			start(stdscr);
+			usleep(250000);
+			start_color();
+			init_pair(1, COLOR_BLACK, COLOR_CYAN);
+			attron(COLOR_PAIR(1));
+			mvprintw(h-1, 0, "RUNNING");
+			attroff(COLOR_PAIR(1));
+		}
 		move(y, x);
 		refresh();
 	}

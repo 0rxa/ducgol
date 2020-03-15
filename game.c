@@ -22,7 +22,7 @@ start(WINDOW* win)
 			char current = mvinch(c, g);
 			if(current == BLOCK && neighbours < 2 || neighbours > 3)
 			{
-				new_board[c][g] = ' ';
+				new_board[c][g] = FIELD;
 			}
 			else if(current != BLOCK && neighbours == 3)
 			{
@@ -41,7 +41,7 @@ populate()
 	for(int c = 0; c <= h; c++)
 	{
 		board[c] = calloc((w+1), sizeof(char));
-		for(int g = 0; g <= w; g++) board[c][g] = ' ';
+		for(int g = 0; g <= w; g++) board[c][g] = FIELD;
 	}
 
 	for(int c = 0; c <= h; c++)
@@ -49,7 +49,7 @@ populate()
 		for(int g = 0; g <= w; g++)
 		{
 			char ch = mvinch(c, g);
-			ch = ch == BLOCK ? ch : ' ';
+			ch = ch == BLOCK ? ch : FIELD;
 			board[c][g] = ch;
 		}
 	}

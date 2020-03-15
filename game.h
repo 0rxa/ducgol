@@ -1,6 +1,8 @@
 #include <curses.h>
 
 #define BLOCK '#'
+#define FIELD ' '
+
 char** board;
 int h, w;
 
