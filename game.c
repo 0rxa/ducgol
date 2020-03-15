@@ -1,10 +1,17 @@
 #include "game.h"
 #include <stdlib.h>
+#include <string.h>
 
 void
 start(WINDOW* win)
 {
 	populate(win);
+	char** new_board = calloc((h+1), sizeof(char*));
+	for(int c = 0; c <= h; c++)
+	{
+		new_board[c] = calloc((w+1), sizeof(char));
+		memcpy(new_board[c], board[c], w+1);
+	}
 
 	for(int c = 0; c <= h; c++)
 	{
@@ -14,16 +21,16 @@ start(WINDOW* win)
 			char current = mvwinch(win, c, g);
 			if(current == BLOCK && neighbours < 2 || neighbours > 3)
 			{
-				board[c][g] = ' ';
+				new_board[c][g] = ' ';
 			}
 			else if(current != BLOCK && neighbours == 3)
 			{
-				board[c][g] = BLOCK;
+				new_board[c][g] = BLOCK;
 			}
 		}
 	}
 
-	apply(win);
+	apply(win, new_board);
 }
 
 void
@@ -70,13 +77,13 @@ countn(int x, int y)
 }
 
 void
-apply(WINDOW* win)
+apply(WINDOW* win, char** new_board)
 {
-	for(int c = 0; c <= w; c++)
+	for(int c = 0; c <= h; c++)
 	{
-		for(int g = 0; g <= h; g++)
+		for(int g = 0; g <= w; g++)
 		{
-			mvwaddch(win, c, g, board[c][g]);
+			mvwaddch(win, c, g, new_board[c][g]);
 		}
 	}
 }
