@@ -3,9 +3,13 @@
 // Any live cell with more than three live neighbours dies
 // Any dead cell with exactly three live neighbours comes to life
 
+#include <unistd.h>
+
 #include "./game.h"
 
-#define BLOCK '#'
+#define TAB '\x09'
+#define ENTER '\x0A'
+#define ESC '\x1B'
 
 int main()
 {
@@ -15,11 +19,12 @@ int main()
 	noecho();
 	keypad(stdscr, TRUE);
 
+	int run = 0;
 	int x = 0, y = 0;
 	int ch;
 	while(1)
 	{
-		ch = getch();
+		if(!run) ch = getch();
 		int h, w;
 		getmaxyx(stdscr, h, w);
 
@@ -33,8 +38,10 @@ int main()
 		else if(ch == KEY_RIGHT || ch == 'l' && x+1 <= w) x++;
 		else if(ch == KEY_DOWN  || ch == 'j' && y+1 <= h) y++;
 		else if(ch == KEY_UP    || ch == 'k' && y-1 >= 0) y--;
-		else if(ch == '\x0A') start(stdscr); // ENTER
-		else if(ch == '\x1B' || ch == 'q') break; // ESC
+
+		else if(ch == ENTER || run) { start(stdscr); usleep(250000); }
+		else if(ch == ESC || ch == 'q') break;
+		else if(ch == TAB) run = 1;
 		move(y, x);
 		refresh();
 	}
