@@ -11,7 +11,25 @@
 #define ENTER '\x0A'
 #define ESC '\x1B'
 
-int main(int argc, char** argv)
+void
+write_label(void)
+{
+	init_pair(1, COLOR_BLACK, COLOR_CYAN);
+	attron(COLOR_PAIR(1));
+	mvprintw(h-1, 0, "RUNNING");
+	attroff(COLOR_PAIR(1));
+}
+
+void
+clear_label(int h, int y, int x)
+{
+	move(h-1, 0);
+	clrtoeol();
+	move(y, x);
+}
+
+int
+main(int argc, char** argv)
 {
 	initscr();
 	cbreak();
@@ -41,12 +59,7 @@ int main(int argc, char** argv)
 
 		else if(ch == TAB)
 		{
-			if(run)
-			{
-				move(h-1, 0);
-				clrtoeol();
-				move(y, x);
-			}
+			if(run) clear_label(h, y, x);
 			run = !run;
 		}
 		else if(ch == ESC || ch == 'q') break;
@@ -55,10 +68,7 @@ int main(int argc, char** argv)
 			start(stdscr);
 			usleep(250000);
 			start_color();
-			init_pair(1, COLOR_BLACK, COLOR_CYAN);
-			attron(COLOR_PAIR(1));
-			mvprintw(h-1, 0, "RUNNING");
-			attroff(COLOR_PAIR(1));
+			if(run) write_label();
 		}
 		move(y, x);
 		refresh();
