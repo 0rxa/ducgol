@@ -16,12 +16,10 @@ int main()
 	keypad(stdscr, TRUE);
 
 	int x = 0, y = 0;
-	int run = 0;
 	int ch;
 	while(1)
 	{
-		if(run) start(stdscr);
-		else ch = getch();
+		ch = getch();
 		int h, w;
 		getmaxyx(stdscr, h, w);
 
@@ -35,7 +33,7 @@ int main()
 		else if(ch == KEY_RIGHT || ch == 'l' && x+1 <= w) x++;
 		else if(ch == KEY_DOWN  || ch == 'j' && y+1 <= h) y++;
 		else if(ch == KEY_UP    || ch == 'k' && y-1 >= 0) y--;
-		else if(ch == '\x0A') run = !run; // ENTER
+		else if(ch == '\x0A') start(stdscr); // ENTER
 		else if(ch == '\x1B' || ch == 'q') break; // ESC
 		move(y, x);
 		refresh();
