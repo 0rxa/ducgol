@@ -5,7 +5,8 @@
 void
 start(WINDOW* win)
 {
-	populate(win);
+	getmaxyx(win, h, w);
+	populate();
 	char** new_board = calloc((h+1), sizeof(char*));
 	for(int c = 0; c <= h; c++)
 	{
@@ -18,7 +19,7 @@ start(WINDOW* win)
 		for(int g = 0; g <= w; g++)
 		{
 			int neighbours = countn(g, c);
-			char current = mvwinch(win, c, g);
+			char current = mvinch(c, g);
 			if(current == BLOCK && neighbours < 2 || neighbours > 3)
 			{
 				new_board[c][g] = ' ';
@@ -30,13 +31,12 @@ start(WINDOW* win)
 		}
 	}
 
-	apply(win, new_board);
+	apply(new_board);
 }
 
 void
-populate(WINDOW* win)
+populate()
 {
-	getmaxyx(win, h, w);
 	board = calloc((h+1), sizeof(char*));
 	for(int c = 0; c <= h; c++)
 	{
@@ -48,7 +48,7 @@ populate(WINDOW* win)
 	{
 		for(int g = 0; g <= w; g++)
 		{
-			char ch = mvwinch(win, c, g);
+			char ch = mvinch(c, g);
 			ch = ch == BLOCK ? ch : ' ';
 			board[c][g] = ch;
 		}
@@ -77,13 +77,13 @@ countn(int x, int y)
 }
 
 void
-apply(WINDOW* win, char** new_board)
+apply(char** new_board)
 {
 	for(int c = 0; c <= h; c++)
 	{
 		for(int g = 0; g <= w; g++)
 		{
-			mvwaddch(win, c, g, new_board[c][g]);
+			mvaddch(c, g, new_board[c][g]);
 		}
 	}
 }
