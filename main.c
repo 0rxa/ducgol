@@ -11,7 +11,7 @@
 #define ENTER '\x0A'
 #define ESC '\x1B'
 
-int main()
+int main(int argc, char** argv)
 {
 	initscr();
 	cbreak();
@@ -24,7 +24,7 @@ int main()
 	int ch;
 	while(1)
 	{
-		if(!run) ch = getch();
+		ch = getch();
 		int h, w;
 		getmaxyx(stdscr, h, w);
 
@@ -39,9 +39,9 @@ int main()
 		else if(ch == KEY_DOWN  || ch == 'j' && y+1 <= h) y++;
 		else if(ch == KEY_UP    || ch == 'k' && y-1 >= 0) y--;
 
-		else if(ch == ENTER || run) { start(stdscr); usleep(250000); }
+		else if(ch == TAB) run = !run;
 		else if(ch == ESC || ch == 'q') break;
-		else if(ch == TAB) run = 1;
+		else if(ch == ENTER || run) { start(stdscr); usleep(250000); }
 		move(y, x);
 		refresh();
 	}
