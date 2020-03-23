@@ -1,4 +1,5 @@
 #include "game.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,10 +13,6 @@ start(WINDOW* win)
 	{
 		new_board[c] = calloc((w+1), sizeof(char));
 		memcpy(new_board[c], board[c], w+1);
-	}
-
-	for(int c = 0; c <= h; c++)
-	{
 		for(int g = 0; g <= w; g++)
 		{
 			int neighbours = countn(g, c);
@@ -41,11 +38,6 @@ populate()
 	for(int c = 0; c <= h; c++)
 	{
 		board[c] = calloc((w+1), sizeof(char));
-		for(int g = 0; g <= w; g++) board[c][g] = FIELD;
-	}
-
-	for(int c = 0; c <= h; c++)
-	{
 		for(int g = 0; g <= w; g++)
 		{
 			char ch = mvinch(c, g);
