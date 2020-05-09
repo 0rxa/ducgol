@@ -4,7 +4,7 @@
 #include <string.h>
 
 void
-start(WINDOW* win)
+step(WINDOW* win)
 {
 	getmaxyx(win, h, w);
 	populate();
