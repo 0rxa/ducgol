@@ -4,8 +4,9 @@
 // Any dead cell with exactly three live neighbours comes to life
 
 #include <unistd.h>
+#include <string.h>
 
-#include "./game.h"
+#include "game.h"
 
 #define TAB '\x09'
 #define ENTER '\x0A'
@@ -31,6 +32,61 @@ clear_label(int h, int y, int x)
 int
 main(int argc, char** argv)
 {
+	config* cfg = malloc(sizeof(config));
+	cfg->sleep = 250000;
+	cfg->help = 0;
+	cfg->interactive = 0;
+	cfg->path = NULL;
+
+	char c;
+	while((c = getopt(argc, argv, "hif:s:")) != -1)
+	{
+		switch(c)
+		{
+			case 'h':
+				cfg->help = 1;
+				break;
+			case 'i':
+				cfg->interactive = 1;
+				break;
+			case 'f':
+				cfg->path = calloc(sizeof(char), strlen(optarg));
+				strcpy(cfg->path, optarg);
+				break;
+			case 's':
+				cfg->sleep = atoi(optarg);
+				break;
+			case '?':
+				if(optopt == 's')
+				{
+					fprintf(stderr, "Option -%c requires an argument", optopt);
+				}
+
+				puts("\n");
+				cfg->help = 1;
+				break;
+		}
+
+		if(cfg->help) break;
+	}
+
+	if(!cfg->interactive && cfg->path == NULL)
+	{
+		printf("You need to either specify a file path or use the interactive option");
+		cfg->help=1;
+	}
+
+	if(cfg->help)
+	{
+		printf("ducgol [opt]\n"
+			      "\t -h		Display this help message\n"
+			      "\t -i		Run in interactive mode\n"
+			      "\t -f path	Read template from file\n"
+			      "\t -s n		Set number of microseconds between each iteration\n");
+
+		return 0;
+	}
+
 	initscr();
 	cbreak();
 	nodelay(stdscr, 1);
@@ -65,8 +121,8 @@ main(int argc, char** argv)
 		else if(ch == ESC || ch == 'q') break;
 		else if(ch == ENTER || run)
 		{
-			start(stdscr);
-			usleep(250000);
+			step(stdscr);
+			usleep(cfg->sleep);
 			start_color();
 			if(run) write_label();
 		}
