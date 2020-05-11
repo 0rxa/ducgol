@@ -22,7 +22,7 @@ step(WINDOW* win)
 		{
 			int neighbours = countn(g, c);
 			char current = mvinch(c, g);
-			if(current == BLOCK && neighbours < 2 || neighbours > 3)
+			if((current == BLOCK && neighbours < 2) || neighbours > 3)
 			{
 				new_board[c][g] = FIELD;
 			}
