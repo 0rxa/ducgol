@@ -46,6 +46,7 @@ main(int argc, char** argv)
 				{
 					fprintf(stderr, "File not found or permission denied\n");
 					cfg->help = 1;
+					RETVAL = 1;
 				}
 				else
 				{
@@ -54,12 +55,17 @@ main(int argc, char** argv)
 				break;
 			case 's':
 				cfg->sleep = atoi(optarg);
-				if(cfg->sleep <= 0) fprintf(stderr, "Wait time can't be less than 1\n");
+				if(cfg->sleep <= 0)
+				{
+					fprintf(stderr, "Wait time can't be less than 1\n");
+					RETVAL = 1;
+				}
 				else cfg->sleep = atoi(optarg);
 				break;
 			case '?':
 				if(optopt == 's') fprintf(stderr, "Option -%c requires an argument\n", optopt);
 				cfg->help = 1;
+				RETVAL = 1;
 				break;
 		}
 
@@ -69,6 +75,7 @@ main(int argc, char** argv)
 				      "\t -h		Display this help message\n"
 				      "\t -f path	Read template from file\n"
 				      "\t -s n		Set number of microseconds to wait before each iteration\n");
+			return RETVAL;
 		}
 	}
 
