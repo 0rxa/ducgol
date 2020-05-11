@@ -1,8 +1,3 @@
-// Any live cell with fewer than two live neighbours dies
-// Any live cell with two or three live neighbours lives
-// Any live cell with more than three live neighbours dies
-// Any dead cell with exactly three live neighbours comes to life
-
 #include <unistd.h>
 #include <string.h>
 
@@ -32,59 +27,49 @@ clear_label(int h, int y, int x)
 int
 main(int argc, char** argv)
 {
+	int RETVAL = 0;
 	config* cfg = malloc(sizeof(config));
 	cfg->sleep = 250000;
 	cfg->help = 0;
-	cfg->interactive = 0;
 	cfg->path = NULL;
 
 	char c;
-	while((c = getopt(argc, argv, "hif:s:")) != -1)
+	while((c = getopt(argc, argv, "hf:s:")) != -1)
 	{
 		switch(c)
 		{
 			case 'h':
 				cfg->help = 1;
 				break;
-			case 'i':
-				cfg->interactive = 1;
-				break;
 			case 'f':
-				cfg->path = calloc(sizeof(char), strlen(optarg));
-				strcpy(cfg->path, optarg);
+				if(!access(cfg->path, R_OK))
+				{
+					fprintf(stderr, "File not found or permission denied\n");
+					cfg->help = 1;
+				}
+				else
+				{
+					cfg->path = optarg;
+				}
 				break;
 			case 's':
 				cfg->sleep = atoi(optarg);
+				if(cfg->sleep <= 0) fprintf(stderr, "Wait time can't be less than 1\n");
+				else cfg->sleep = atoi(optarg);
 				break;
 			case '?':
-				if(optopt == 's')
-				{
-					fprintf(stderr, "Option -%c requires an argument", optopt);
-				}
-
-				puts("\n");
+				if(optopt == 's') fprintf(stderr, "Option -%c requires an argument\n", optopt);
 				cfg->help = 1;
 				break;
 		}
 
-		if(cfg->help) break;
-	}
-
-	if(!cfg->interactive && cfg->path == NULL)
-	{
-		printf("You need to either specify a file path or use the interactive option");
-		cfg->help=1;
-	}
-
-	if(cfg->help)
-	{
-		printf("ducgol [opt]\n"
-			      "\t -h		Display this help message\n"
-			      "\t -i		Run in interactive mode\n"
-			      "\t -f path	Read template from file\n"
-			      "\t -s n		Set number of microseconds between each iteration\n");
-
-		return 0;
+		if(cfg->help)
+		{
+			printf("ducgol [opt]\n"
+				      "\t -h		Display this help message\n"
+				      "\t -f path	Read template from file\n"
+				      "\t -s n		Set number of microseconds to wait before each iteration\n");
+		}
 	}
 
 	initscr();
@@ -93,11 +78,18 @@ main(int argc, char** argv)
 	noecho();
 	keypad(stdscr, TRUE);
 
+	if(cfg->path != NULL)
+	{
+		FILE* template = fopen(cfg->path, "r");
+		import_template(template, stdscr);
+	}
+
 	int run = 0;
 	int x = 0, y = 0;
 	int ch;
 	while(1)
 	{
+		refresh();
 		ch = getch();
 		int h, w;
 		getmaxyx(stdscr, h, w);
@@ -127,7 +119,6 @@ main(int argc, char** argv)
 			if(run) write_label();
 		}
 		move(y, x);
-		refresh();
 	}
 
 	endwin();

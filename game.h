@@ -18,3 +18,4 @@ void step(WINDOW* win);
 void populate(void);
 int countn(int x, int y);
 void apply(char** new_board);
+void import_template(FILE* template, WINDOW* win);
