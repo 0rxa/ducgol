@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+int h, w;
+char** board;
+
 void
 step(WINDOW* win)
 {

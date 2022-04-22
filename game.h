@@ -4,9 +4,6 @@
 #define BLOCK '#'
 #define FIELD ' '
 
-char** board;
-int h, w;
-
 typedef struct config {
 	int help;
 	int interactive;
