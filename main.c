@@ -8,7 +8,7 @@
 #define ESC '\x1B'
 
 void
-write_label(void)
+write_label(int h)
 {
 	init_pair(1, COLOR_BLACK, COLOR_CYAN);
 	attron(COLOR_PAIR(1));
@@ -123,7 +123,7 @@ main(int argc, char** argv)
 			step(stdscr);
 			usleep(cfg->sleep);
 			start_color();
-			if(run) write_label();
+			if(run) write_label(h);
 		}
 		move(y, x);
 	}
